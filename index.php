@@ -60,7 +60,7 @@
     JOIN 
         ratings ON movies.rating_id = ratings.rating_id
     ORDER BY
-        movies.movie_id ASC";
+        movies.movie_name ASC";
 
     $stmt = $pdo->query($sql);
     $results = $stmt->fetchAll();
