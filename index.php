@@ -177,7 +177,7 @@
     $stmt = $pdo->query($sql);
     $results = $stmt->fetchAll();
 
-    echo "<h2>Uwaga! aktorzy są przypisywani do filmów losowo XD</h2>";
+    echo "<h2>Dane nie są koniecznie zgodne ze stanem faktycznym, wypełniono je losowo na potrzeby testów</h2>";
     echo "<h2>Wszystkie Filmy</h2>";
     echo "<table><tr>
         <th>Movie ID</th>
