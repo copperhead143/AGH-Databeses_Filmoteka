@@ -4,6 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filmoteka - Filtruj Filmy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label, select, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            width: auto;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
 <?php
@@ -19,7 +107,6 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
-
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
@@ -45,8 +132,6 @@ AND (:studio1 = '' OR movies.studio_id = :studio2 OR movies.studio_id = '0')
 AND ratings.points BETWEEN :min_rating AND :max_rating 
 ORDER BY movies.movie_id ASC";
 
-
-
 $stmt = $pdo->prepare($sql);
 
 $stmt->execute([
@@ -59,15 +144,15 @@ $stmt->execute([
     ':max_rating' => $max_rating,
 ]);
 
-
-
 $results = $stmt->fetchAll();
-
-
 ?>
 
 <h1>Filtruj Filmy</h1>
-<a href="index.php">Wróć do strony głównej</a>
+<nav>
+    <ul>
+        <li><a href="index.php">Wróć do strony głównej</a></li>
+    </ul>
+</nav>
 <form action="" method="GET">
     <label for="actor">Aktor:</label>
     <select name="actor" id="actor">
@@ -101,7 +186,7 @@ $results = $stmt->fetchAll();
 </form>
 
 <h1>Wyniki Filtracji</h1>
-<table border='1'>
+<table>
     <tr>
         <th>Movie ID</th>
         <th>Movie Name</th>
@@ -136,5 +221,8 @@ foreach ($results as $row) {
 }
 ?>
 </table>
+<footer>
+    Projekt bazy danych AGH WIMiIP Szymon Sikora
+</footer>
 </body>
 </html>

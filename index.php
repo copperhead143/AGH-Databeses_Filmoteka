@@ -4,6 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filmoteka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label, select, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            width: auto;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Filmoteka</h1>
@@ -13,6 +101,19 @@
             <li><a href="add.php">Dodaj Dane</a></li>
         </ul>
     </nav>
+    <form action="" method="GET">
+        <label for="sort">Sortuj według:</label>
+        <select name="sort" id="sort">
+            <option value="movie_name ASC">Alfabetycznie A-Z</option>
+            <option value="movie_name DESC">Alfabetycznie Z-A</option>
+            <option value="movie_id ASC">ID rosnąco</option>
+            <option value="movie_id DESC">ID malejąco</option>
+            <option value="ratings.points ASC">Ocena rosnąco</option>
+            <option value="ratings.points DESC">Ocena malejąco</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Sortuj">
+    </form>
     <?php
     $host = '127.0.0.1';
     $db = 'filmoteka';
@@ -31,6 +132,17 @@
         $pdo = new PDO($dsn, $user, $pass, $options);
     } catch (\PDOException $e) {
         throw new \PDOException($e->getMessage(), (int)$e->getCode());
+    }
+
+    $sort = isset($_GET['sort']) ? $_GET['sort'] : 'movie_name ASC';
+    $valid_sort_columns = [
+        'movie_id ASC', 'movie_id DESC',
+        'movie_name ASC', 'movie_name DESC',
+        'ratings.points ASC', 'ratings.points DESC'
+    ];
+
+    if (!in_array($sort, $valid_sort_columns)) {
+        $sort = 'movie_name ASC';
     }
 
     $sql = "
@@ -60,15 +172,14 @@
     JOIN 
         ratings ON movies.rating_id = ratings.rating_id
     ORDER BY
-        movies.movie_name ASC";
+        $sort";
 
     $stmt = $pdo->query($sql);
     $results = $stmt->fetchAll();
 
-    // Wyświetlanie danych w jednej tabeli HTML
     echo "<h2>Uwaga! aktorzy są przypisywani do filmów losowo XD</h2>";
     echo "<h2>Wszystkie Filmy</h2>";
-    echo "<table border='1'><tr>
+    echo "<table><tr>
         <th>Movie ID</th>
         <th>Movie Name</th>
         <th>Director First Name</th>
@@ -102,5 +213,8 @@
 
     echo "</table>";
     ?>
+    <footer>
+        Projekt bazy danych AGH WIMiIP Szymon Sikora
+    </footer>
 </body>
 </html>
